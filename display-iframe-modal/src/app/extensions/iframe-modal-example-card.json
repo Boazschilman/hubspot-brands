@@ -1,11 +1,21 @@
 {
   "type": "crm-card",
   "data": {
-    "title": "Iframe modal example card",
-    "location": "crm.record.tab",
+    "title": "Brand Allocation",
+    "uid": "brand_allocation_card",
+    "location": "deals",
     "module": {
-      "file": "DisplayIframe.jsx"
+      "file": "brand-allocation.html"
     },
-    "objectTypes": [{ "name": "contacts" }]
+    "actions": [
+      {
+        "type": "IFRAME_MODAL",
+        "file": "allocation-form.html",
+        "label": "Allocate Brands",
+        "width": 600,
+        "height": 400,
+        "propertyNamesIncluded": ["dealId", "company"]
+      }
+    ]
   }
 }
