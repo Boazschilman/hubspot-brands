@@ -13,7 +13,7 @@ app.use(express.static('public'));
 // HubSpot API configuration
 const hubspot = axios.create({
   baseURL: 'https://api.hubapi.com/crm/v3',
-  headers: { Authorization: `Bearer ${process.env.HUBSPOT_TOKEN}` }
+  headers: { Authorization: `Bearer ${process.env.HUBSPOT_TOKEN}` },
 });
 
 // Serve allocation form for root URL
@@ -31,4 +31,24 @@ app.post('/api/brands/:companyName', async (req, res) => {
             {
               propertyName: 'company_name__associated_',
               operator: 'EQ',
-              
+              value: req.params.companyName,
+            },
+          ],
+        },
+      ],
+      properties: ['brand_name'],
+    });
+    res.json(response.data.results);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Create sync objects for allocations
+app.post('/api/allocations', async (req, res) => {
+  try {
+    const { allocations } = req.body;
+    const currentDate = new Date().toLocaleDateString('en-GB');
+
+    const syncPromises = Object.entries(allo
