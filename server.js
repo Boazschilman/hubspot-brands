@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'allocation-form.html'));
 });
 
-// Get brands for company
+// Get brands for a company
 app.post('/api/brands/:companyName', async (req, res) => {
   try {
     const response = await hubspot.post('/objects/2-18764855/search', {
@@ -52,13 +52,24 @@ app.post('/api/allocations', async (req, res) => {
     const currentDate = new Date().toLocaleDateString('en-GB');
 
     const syncPromises = Object.entries(allocations).map(([brand, amount]) => {
+      return hubspot.post('/objects/2-37689119', {
+        properties: {
+          sync: `allocation-${brand}-${currentDate}`,
+          brand_name: brand,
+          synced_product: 'Agents',
+          synced_amount: amount.toString(),
+        },
+      });
+    });
 
-  return hubspot.post('/objects/2-37689119', {
-    properties: {
-      sync: `allocation-${brand}-${currentDate}`,
-      brand_name: brand,
-      synced_product: 'Agents',
-      synced_amount: amount.toString(),
-    },
-  });
+    const results = await Promise.all(syncPromises);
+    res.json({ success: true, syncs: results.map((r) => r.data) });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
 });
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
