@@ -1,6 +1,9 @@
 import { Button, Text, Box, Flex, hubspot } from "@hubspot/ui-extensions";
 
-hubspot.extend(({ actions }) => <Extension openIframe={actions.openIframeModal} />);
+hubspot.extend(({ actions }) => <Extension openIframe={actions.openIframeModal} />, {
+  type: "crm-card",
+  location: "deals",  // This specifies it should appear on deal pages
+});
 
 const Extension = ({ openIframe }) => {
   const handleClick = () => {
