@@ -11,8 +11,7 @@ const hubspot = axios.create({
   headers: { Authorization: `Bearer ${process.env.HUBSPOT_TOKEN}` }
 });
 
-const allocations = new Map();
-
+// Get brands for company
 app.post('/api/brands/:companyName', async (req, res) => {
   try {
     const response = await hubspot.post('/objects/2-18764855/search', {
@@ -31,10 +30,28 @@ app.post('/api/brands/:companyName', async (req, res) => {
   }
 });
 
-app.post('/api/allocations', (req, res) => {
-  const { dealId, allocations: brandAllocations } = req.body;
-  allocations.set(dealId, brandAllocations);
-  res.json({ success: true });
+// Create sync objects for allocations
+app.post('/api/allocations', async (req, res) => {
+  try {
+    const { allocations } = req.body;
+    const currentDate = new Date().toLocaleDateString('en-GB'); // dd-mm-yyyy format
+    
+    // Create sync object for each brand allocation
+    const syncPromises = Object.entries(allocations).map(([brand, amount]) => {
+      return hubspot.post('/objects/2-37689119', {
+        properties: {
+          sync: `allocation-${brand}-${currentDate}`,
+          synced_product: "Agents",
+          synced_amount: amount.toString()
+        }
+      });
+    });
+
+    const results = await Promise.all(syncPromises);
+    res.json({ success: true, syncs: results.map(r => r.data) });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
