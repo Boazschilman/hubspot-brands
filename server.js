@@ -6,13 +6,14 @@ const path = require('path');
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'));
 
 const hubspot = axios.create({
   baseURL: 'https://api.hubapi.com/crm/v3',
   headers: { Authorization: `Bearer ${process.env.HUBSPOT_TOKEN}` }
 });
 
-// Serve the form for root route and OAuth callback
+// Serve allocation form for root and OAuth callback
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'allocation-form.html'));
 });
