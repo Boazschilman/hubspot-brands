@@ -37,15 +37,16 @@ app.post('/api/allocations', async (req, res) => {
     const currentDate = new Date().toLocaleDateString('en-GB'); // dd-mm-yyyy format
     
     // Create sync object for each brand allocation
-    const syncPromises = Object.entries(allocations).map(([brand, amount]) => {
-      return hubspot.post('/objects/2-37689119', {
-        properties: {
-          sync: `allocation-${brand}-${currentDate}`,
-          synced_product: "Agents",
-          synced_amount: amount.toString()
-        }
-      });
-    });
+const syncPromises = Object.entries(allocations).map(([brand, amount]) => {
+  return hubspot.post('/objects/2-37689119', {
+    properties: {
+      sync: `allocation-${brand}-${currentDate}`,
+      brand_name: brand,  // Use the actual brand name from allocations
+      synced_product: "Agents",
+      synced_amount: amount.toString()
+    }
+  });
+});
 
     const results = await Promise.all(syncPromises);
     res.json({ success: true, syncs: results.map(r => r.data) });
