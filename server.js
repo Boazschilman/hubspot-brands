@@ -22,7 +22,7 @@ app.post('/api/brands/:companyName', async (req, res) => {
           value: req.params.companyName
         }]
       }],
-      properties: ["commbox_url"]
+      properties: ["brand_name"]
     });
     res.json(response.data.results);
   } catch (error) {
