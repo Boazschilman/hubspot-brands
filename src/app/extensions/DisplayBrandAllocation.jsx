@@ -2,7 +2,7 @@ import { Button, Text, Box, Flex, hubspot } from "@hubspot/ui-extensions";
 
 hubspot.extend(({ actions }) => <Extension openIframe={actions.openIframeModal} />, {
   type: "crm-card",
-  location: "deals"
+  location: "crm.deals.tab"
 });
 
 const Extension = ({ openIframe }) => {
