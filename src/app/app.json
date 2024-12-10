@@ -7,7 +7,7 @@
     "crm": {
       "cards": [
         {
-          "file": "extensions/brand-allocation-card.json"
+          "file": "extensions/DisplayBrandAllocation.jsx"
         }
       ]
     }
