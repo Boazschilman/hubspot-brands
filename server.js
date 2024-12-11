@@ -36,7 +36,7 @@ app.post('/api/brands/:companyName', async (req, res) => {
           ],
         },
       ],
-      properties: ['brand_name'],
+      properties: ['commbox_url'],
     });
     res.json(response.data.results);
   } catch (error) {
@@ -55,7 +55,7 @@ app.post('/api/allocations', async (req, res) => {
       return hubspot.post('/objects/2-37689119', {
         properties: {
           sync: `allocation-${brand}-${currentDate}`,
-          brand_name: brand,
+          commbox_url: brand,
           synced_product: 'Agents',
           synced_amount: amount.toString(),
         },
